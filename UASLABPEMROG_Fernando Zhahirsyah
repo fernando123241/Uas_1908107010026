@@ -1,0 +1,245 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+//Deklarasi Variabel
+char isi[255];
+
+//Deklarasi struct
+struct DATA
+{
+    char nama[30];
+	int umur, id;
+	char jk[30];
+}tambah, cek, hapus, sort[100], temp;
+
+//Deklarasi Pointer
+FILE *buka_file;
+FILE *buka_file1;
+
+//Deklarasi Fungsi
+void tutup();
+void login();
+void menu_utama();
+void tambah_data();
+void tampil_data();
+void cari_data();
+void hapus_data();
+void ubah_data();
+
+//Isi fungsi tutup
+void tutup()
+{
+
+}
+
+//Isi fungsi login
+void login()
+{
+    char username[16], password[16];
+    printf("-------------------------------------\n");
+    printf("-       Portal Login Data           -\n");
+    printf("-------------------------------------\n");
+    printf("Username : ");
+    scanf("%s", &username);
+    printf("Password : ");
+    scanf("%s", &password);
+
+    if((strcmp(username, "admin") == 0) && (strcmp(password, "root") == 0))
+    {
+        //Jika benar maka lanjut ke fungsi menu_utama
+        menu_utama();
+    }
+    else
+    {
+        //Jika salah maka kembali ke login
+        printf("\nUsername atau password anda salah!!\n");
+        login();
+    }
+}
+
+//Isi fungsi menu_utama
+void menu_utama()
+{
+    int pilihan;
+    printf("-------------------------------------\n");
+    printf("-          Selamat Datang           -\n");
+    printf("-------------------------------------\n");
+    printf("- 1. Tambah data                    -\n");
+    printf("- 2. Tampilkan Data                 -\n");
+    printf("- 3. Cari Data                      -\n");
+    printf("- 4. Hapus Data                     -\n");
+    printf("- 5. Ubah Data                      -\n");
+    printf("- 6. Keluar                         -\n");
+    printf("-------------------------------------\n");
+    printf("Pilihan : ");
+    scanf("%d", &pilihan);
+
+    switch (pilihan)
+    {
+    case 1:
+        tambah_data();//Pilihan 1 ke fungsi tambah_data
+        break;
+    case 2:
+        tampil_data();//Pilihan 2 ke fungsi tampil data
+        break;
+    case 3:
+        cari_data();//Pilihan 3 ke fungsi cari data
+        break;
+    case 4:
+        hapus_data();//Pilihan 4 ke fungsi hapus_data
+        break;
+    case 5:
+        ubah_data();//Pilihan 5 ke fungsi ubah_data
+        break;
+    case 6:
+        return;//Program Selesai
+        break;
+    default:
+        menu_utama();//Selain pilihan diatas balek ke menu
+    }
+}
+
+//Isi fungsi tambah_data
+void tambah_data()
+{
+    int i = 0;
+    buka_file = fopen("data.txt", "a");//Membuat file
+        buka_file1 = fopen("data.txt", "r");//Membuka file
+        while(fscanf(buka_file1,"%d;%[^;];%[^;];%d\n", &tambah.id, tambah.nama, tambah.jk, &tambah.umur) != EOF)//Membaca isi file
+        {
+            tambah.id++;
+        }
+        cek.id = tambah.id;
+        fclose(buka_file1);//menutup file
+        printf("Masukkan nama penghulu :"); fflush(stdin);
+        scanf("%[^\n]", tambah.nama);
+        printf("Masukkan jenis kelamin penghulu : "); fflush(stdin);
+        scanf("%[^\n]", tambah.jk);
+        printf("Masukkan umur penghulu : "); fflush(stdin);
+        scanf("%d", tambah.umur);
+        fprintf(buka_file,"%d;%s;%s;%d\n",tambah.id,tambah.nama,tambah.jk,tambah.umur);//Mengisi file
+        fclose(buka_file);//Menutup File
+
+    printf("Data Sudah Tersimpan....");
+    int j;
+    printf("Lanjut? (y/n) : ");
+    if((j = 'y') || (j = 'Y')){
+        menu_utama();//Kembali ke menu utama
+    }
+    else if ((j = 'n') || (j = 'N'))
+    {
+        tutup();//Selesai
+    }
+    else
+    {
+        continue;//Tanyak kembali apakah y/n
+    }
+}
+
+//Isi fungsi tampil_data
+ void tampil_data()
+ {
+     buka_file = fopen("data.txt", "r");//Membuka file
+     int i = 0;
+     printf("Id\tNama Penghulu\tJenis Kelamin\tUmur\n");
+     while(fscanf(buka_file, "%d;%[^;];%[^;];%d\n", tambah.id, tambah.nama, tambah.jk, tambah.umur) != EOF)//Membaca isi file
+     {
+         printf("%d\t%s\t%s\t%d\n", tambah.id, tambah.nama, tambah.jk, tambah.umur);//Memberikan nilai ke user
+         i++;
+     }
+     printf("\nJumlah Data : %d", i);
+     fclose(buka_file);//Tutup file
+
+     if(i==0)
+     {
+         printf("\n!!!Data Kosong!!!\n");//Jika tidak ada data
+     }
+     int j;
+     printf("Lanjut? (y/n) : ");
+     if((j = 'y') || (j = 'Y'))
+     {
+        menu_utama();//Kembali ke menu_utama
+     }
+     else if((j = 'n') || (j = 'N'))
+     {
+         tutup();//Selesai
+     }
+     else
+     {
+         continue;//Tanyak kembali apakah y/n
+     }
+ }
+
+ //Isi fungsi cari_data
+ void cari_data()
+ {
+     int i = 0;
+     buka_file = fopen("data.txt", "r");//Membuka file
+     printf("Masukkan No : ");
+     scanf("%d", &cek.id);//No dibaca
+     while(fscanf(buka_file, "%d;%[^;];%[^;];%d\n", tambah.id, tambah.nama, tambah.jk, tambah.umur) != EOF)//Membaca isi file
+     {
+         if(tambah.id==cek.id)//Cek kesamaan
+         {
+             //Jika true maka tampilkan dibawah ini
+             i = 1;
+             printf("\nID [%d]", tambah.id);
+             printf("\nNama\t: %s", tambah.nama);
+             printf("\nJk\t: %s", tambah.jk);
+             printf("\nUmur\t: %d", tambah.umur);
+         }
+     }
+     fclose(buka_file);//Menutup file
+     if(i != 1)
+     {
+         printf("\nData tidak ditemukan !\n");
+         int j;
+         if((j = 'y') || (j = 'Y'))
+         {
+             menu_utama();//Kembali ke menu utama
+         }
+         else if ((j = 'n') || (j = 'N'))
+         {
+             tutup();//Selesai
+         }
+         else
+         {
+             continue;//Tanyak kembali apakah y/n
+         }
+     }
+     else
+     {
+         int j;
+         if((j = 'y') || (j = 'Y'))
+         {
+             menu_utama();//Kembali ke menu utama
+         }
+         else if ((j = 'n') || (j = 'N'))
+         {
+             tutup();//selesai
+         }
+         else
+         {
+             continue;//Tanyak kembali apakah y/n
+         }
+     }
+ }
+
+ //Isi fungsi hapus_data
+ void hapus_data()
+ {
+
+ }
+
+ //Isi fungsi ubah_data
+ void ubah_data()
+ {
+
+ }
+ //Fungsi utama
+int main()
+{
+    login();//Ke fungsi login
+    return 0;
+}
